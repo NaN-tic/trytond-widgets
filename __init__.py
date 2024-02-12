@@ -4,9 +4,8 @@
 from trytond.pool import Pool
 from . import ir
 from . import routes
-from . import tools
 
-__all__ = ['register', 'routes', 'tools']
+__all__ = ['register', 'routes']
 
 def register():
     Pool.register(
