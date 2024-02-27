@@ -95,7 +95,7 @@ def text_to_js(text):
     '''
     datablocks = []
     text_blocks = text.split('\n')
-    for block in text_blocks: 
+    for block in text_blocks:
         if not block:
             continue
         current_block = {'data' : {}}
@@ -162,12 +162,12 @@ def text_to_js(text):
                         datablocks.append(current_block.copy())
                 case '[':
                     if re.match('\[image', block) or re.match('\[!]', block):
-                        
+
                         block = re.sub("\[!\]", '', block)
                         current_block['type'] = 'image'
                         current_block['data']['url'] = block.strip('(').strip(')')
                         #str(attachment_id_from_name(block.strip('[').split(':')[-1].strip(']')))
-                        datablocks.append(current_block.copy())         
+                        datablocks.append(current_block.copy())
                 case _:
                     current_block['type'] = 'paragraph'
                     current_block['data']['text'] = block.strip(' ')
