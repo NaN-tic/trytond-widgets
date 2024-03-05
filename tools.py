@@ -1,5 +1,4 @@
-from trytond.model import ModelView, fields
-from trytond.pool import PoolMeta, Pool
+from trytond.pool import Pool
 import json, re, html2text
 from bs4 import BeautifulSoup
 
@@ -181,7 +180,7 @@ def html_to_js(html_string, is_mail=False):
         processed = text_to_js(converted)
         return processed
     else:
-        if html_string is '' or html_string is None:
+        if html_string == '' or html_string is None:
             return ''
         datablocks = []
         html_json = BeautifulSoup(html_string, 'lxml')
@@ -225,9 +224,9 @@ def html_to_js(html_string, is_mail=False):
                             current_block['data']['items'] = []
                             for input in component.find_all('input'):
                                 if input.find('checked') == 'true':
-                                    checked: 'True'
+                                    checked = 'True'
                                 else:
-                                    checked: 'False'
+                                    checked = 'False'
                                 checkbox = {
                                     'checked': checked,
                                     'text': str(input.find())
