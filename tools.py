@@ -296,7 +296,6 @@ def migrate_field(sql_table, field, type):
         tool = text_to_js
     cursor.execute(*sql_table.select(sql_table.id, field, where=((field != None))))
     records = cursor.fetchall()
-    print('Updating ' + str(len(records)) + ' to JSON blocks')
     counter = 0
     for id, value in records:
         counter += 1
