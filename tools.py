@@ -1,4 +1,5 @@
 from trytond.pool import Pool
+from trytond.transaction import Transaction
 import json, re, html2text
 from bs4 import BeautifulSoup
 
@@ -286,3 +287,30 @@ def attachment_name_from_id(id):
     attachments = Attachment.search([('id', '=', id)], limit=1)
     if attachments:
         return attachments[0].name
+
+def migrate_field(sql_table, field, type):
+    cursor = Transaction().connection.cursor()
+    if type == 'html':
+        tool = html_to_js
+    else:
+        tool = text_to_js
+    cursor.execute(*sql_table.select(sql_table.id, field, where=((field != None))))
+    records = cursor.fetchall()
+    print('Updating ' + str(len(records)) + ' to JSON blocks')
+    counter = 0
+    for id, value in records:
+        counter += 1
+        if counter % 1000 == 0:
+            Transaction().connection.commit()
+        if '"blocks"' not in value:
+            cursor.execute(*sql_table.update(
+                columns=[field],
+                values=[tool(value)],
+                where=sql_table.id == id
+            ))
+
+def has_content(jstext):
+    if not jstext:
+        return False
+    content = json.loads(jstext)
+    return bool(content.get('blocks'))
