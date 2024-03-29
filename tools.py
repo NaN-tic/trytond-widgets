@@ -177,7 +177,7 @@ def text_to_js(text):
 
 def html_to_js(html_string, is_mail=False):
     if not is_mail:
-        converted = html2text.html2text(html_string)
+        converted = html2text.html2text(html_string, bodywidth=0)
         processed = text_to_js(converted)
         return processed
     else:
