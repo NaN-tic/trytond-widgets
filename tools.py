@@ -1,3 +1,5 @@
+import base64
+import hashlib
 import json
 from html2text import html2text
 import re
@@ -16,12 +18,13 @@ def js_plus_js(js1, js2):
     js1['blocks'] += js2['blocks']
     return json.dumps(js1)
 
-def js_to_html(content_block, url=''):
+def js_to_html(content_block, url_prefix='', width=None):
     '''
     Converts editorJS data blocks into an html document
     '''
     if not content_block:
         return ''
+
     html = '<html><body>'
     js_object = json.loads(content_block)
     for block in js_object['blocks']:
@@ -78,13 +81,23 @@ def js_to_html(content_block, url=''):
             case 'quote':
                 html += '<blockquote cite=' + block['data']['caption'] + '>' + block['data']['text'] + '</blockquote>'
             case 'image':
-                html += '<img src="' + url_from_tryton_to_flask(block['data']['url'], url)+ '" />'
+                src = None
+                url = block['data']['file']['url']
+                if url_prefix == 'cid:':
+                    attachment = attachment_from_url(url)
+                    if attachment:
+                        src = 'cid:' + cid_from_attachment(attachment)
+                else:
+                    src = url_from_tryton_to_flask(url, url_prefix)
+                if width:
+                    img_width = f'width="{width}"'
+                if src:
+                    html += f'<img src="{src}" {img_width}/>'
             case 'link':
-                html += '<a href=' + block['data']['url'] + ' ></a>'
+                html += '<a href=' + block['data']['url'] + '></a>'
         if not was_p:
             html += '<br />'
 
-    #html = html[:-3]
     html += '</body></html>'
     return html
 
@@ -273,29 +286,38 @@ def html_to_js(html_string, is_mail=False):
         return json.dumps({'blocks': datablocks})
 
 def url_from_tryton_to_flask(url, prefix):
-    if not 'widgets/attachment' in url:
+    attachment = attachment_from_url(url)
+    if not attachment:
         return url
-    id_ = url.split('/')[-1]
-    try:
-        id_ = int(id_)
-    except:
-        return url
-    name = attachment_name_from_id(str(id_))
-    return prefix + name
+    return prefix + attachment.name
 
-def attachment_id_from_name(name):
+def cid_from_attachment(attachment):
+    return hashlib.md5((attachment.name + '/' + str(attachment.id)
+            ).encode('utf-8')).hexdigest()
+
+def attachment_from_name(name):
     pool = Pool()
     Attachment = pool.get('ir.attachment')
     attachments = Attachment.search([('name', '=', name)], limit=1)
     if attachments:
-        return attachments[0].id
+        return attachments[0]
 
-def attachment_name_from_id(id):
+def attachment_from_id(id):
     pool = Pool()
     Attachment = pool.get('ir.attachment')
     attachments = Attachment.search([('id', '=', id)], limit=1)
     if attachments:
-        return attachments[0].name
+        return attachments[0]
+
+def attachment_from_url(url):
+    if not 'widgets/attachment' in url:
+        return
+    id_ = url.split('/')[-1]
+    try:
+        id_ = int(id_)
+    except:
+        return
+    return attachment_from_id(str(id_))
 
 def migrate_field(sql_table, field, type):
     cursor = Transaction().connection.cursor()
