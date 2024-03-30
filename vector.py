@@ -1,5 +1,4 @@
 from trytond.model import fields
-import numpy as np
 
 
 class Vector(fields.Field):
