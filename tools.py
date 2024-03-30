@@ -4,6 +4,16 @@ import json, re, html2text
 from bs4 import BeautifulSoup
 
 
+def js_plus_js(js1, js2):
+    if not js1:
+        return js2
+    if not js2:
+        return js1
+    js1 = json.loads(js1)
+    js2 = json.loads(js2)
+    js1['blocks'] += js2['blocks']
+    return json.dumps(js1)
+
 def js_to_html(content_block, url=''):
     '''
     Converts editorJS data blocks into an html document
