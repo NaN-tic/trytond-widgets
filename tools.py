@@ -121,7 +121,12 @@ def text_to_js(text):
                     current_block['data']['text'] = block.strip('#').strip(' ')
                     datablocks.append(current_block.copy())
                 case '-':
-                    if len(block) > 2:
+                    if block == '--':
+                        current_block['type'] = 'paragraph'
+                        current_block['data']['text'] = block.strip(' ')
+                        if len(current_block['data']['text'].strip(' ')) > 0:
+                            datablocks.append(current_block.copy())
+                    elif len(block) > 2:
                         if block[1] and block[2]:
                             if block[1] == '-' and block[2] == '-':
                                 current_block['type'] = 'delimeter'
