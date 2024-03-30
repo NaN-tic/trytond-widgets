@@ -1,6 +1,8 @@
+import json
+from html2text import html2text
+import re
 from trytond.pool import Pool
 from trytond.transaction import Transaction
-import json, re, html2text
 from bs4 import BeautifulSoup
 
 
@@ -148,14 +150,6 @@ def text_to_js(text):
                     current_block['type'] = 'code'
                     current_block['data']['code'] = block.strip('`')
                     datablocks.append(current_block.copy())
-                    '''
-                case '>':
-                    current_block['type'] = 'quote'
-                    current_block['data']['text'] = block[1:]
-                    current_block['data']['caption'] = ''
-                    current_block['data']['alignment'] = 'left'
-                    datablocks.append(current_block.copy())
-                    '''
                 case '>':
                     if len(block) > 1:
                         if block[0] and block[1]:
@@ -192,7 +186,7 @@ def text_to_js(text):
 
 def html_to_js(html_string, is_mail=False):
     if not is_mail:
-        converted = html2text.html2text(html_string, bodywidth=0)
+        converted = html2text(html_string, bodywidth=0)
         processed = text_to_js(converted)
         return processed
     else:
