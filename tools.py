@@ -87,10 +87,16 @@ def js_to_html(content_block, url_prefix='', width=None):
                     attachment = attachment_from_url(url)
                     if attachment:
                         src = 'cid:' + cid_from_attachment(attachment)
+                elif url_prefix == 'base64':
+                    attachment = attachment_from_url(url)
+                    if attachment:
+                        src = 'data:;base64,' + base64.encodeb64(attachment.data)
                 else:
                     src = url_from_tryton_to_flask(url, url_prefix)
                 if width:
                     img_width = f'width="{width}"'
+                else:
+                    img_width = ''
                 if src:
                     html += f'<img src="{src}" {img_width}/>'
             case 'link':
