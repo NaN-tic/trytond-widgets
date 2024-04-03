@@ -90,7 +90,7 @@ def js_to_html(content_block, url_prefix='', width=None):
                 elif url_prefix == 'base64':
                     attachment = attachment_from_url(url)
                     if attachment:
-                        src = 'data:;base64,' + base64.encodeb64(attachment.data)
+                        src = 'data:;base64,' + base64.b64encode(attachment.data).decode('utf-8')
                 else:
                     src = url_from_tryton_to_flask(url, url_prefix)
                 if width:
