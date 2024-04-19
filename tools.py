@@ -178,20 +178,20 @@ def text_to_js(text):
                             datablocks.append(current_block.copy())
                 case '!':
                     current_block['type'] = 'image'
-                    block = re.sub("!\[[^\]]*\]", '', block)
+                    block = re.sub(r"!\[[^\]]*\]", '', block)
                     current_block['data']['url'] = block.strip('[').split(':')[-1].strip(']').strip()
                     #str(attachment_id_from_name(block.strip('[').split(':')[-1].strip(']')))
                     datablocks.append(current_block.copy())
                 case '<':
-                    if re.match('\<image>', block):
+                    if re.match(r'\<image>', block):
                         current_block['type'] = 'image'
                         current_block['data']['url'] = block.strip('<').split(':')[-1].strip('>').strip()
                         #str(attachment_id_from_name(block.strip('<').split(':')[-1].strip('>')))
                         datablocks.append(current_block.copy())
                 case '[':
-                    if re.match('\[image', block) or re.match('\[!]', block):
+                    if re.match(r'\[image', block) or re.match(r'\[!]', block):
 
-                        block = re.sub("\[!\]", '', block)
+                        block = re.sub(r"\[!\]", '', block)
                         current_block['type'] = 'image'
                         current_block['data']['url'] = block.strip('(').strip(')')
                         #str(attachment_id_from_name(block.strip('[').split(':')[-1].strip(']')))
