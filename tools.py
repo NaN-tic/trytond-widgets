@@ -76,7 +76,10 @@ def js_to_html(content_block, url_prefix='', width=None):
                 html += '<tr><td>' + block['data']['message'] + '</td></tr>'
             case 'code':
                 html += '<code>'
-                html += re.sub('[^\\]\\n', '<br />',block['data']['code'])
+                try:
+                    html += re.sub('[^\\]\\n', '<br />',block['data']['code'])
+                except re.error:
+                    pass
                 html += '</code>'
             case 'quote':
                 html += '<blockquote cite=' + block['data']['caption'] + '>' + block['data']['text'] + '</blockquote>'
@@ -321,7 +324,7 @@ def attachment_from_url(url):
     id_ = url.split('/')[-1]
     try:
         id_ = int(id_)
-    except:
+    except ValueError:
         return
     return attachment_from_id(str(id_))
 
