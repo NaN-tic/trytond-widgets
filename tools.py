@@ -112,7 +112,11 @@ def js_to_html(content_block, url_prefix='', width=None):
 
 def js_to_text(js):
     text = ''
-    js_object = json.loads(js)
+    try:
+        js_object = json.loads(js)
+    except TypeError:
+        return text
+
     for block in js_object['blocks']:
         if 'text' in block['data']:
             text += block['data']['text'].replace('<br>' , '\\n')
