@@ -25,8 +25,12 @@ def js_to_html(content_block, url_prefix='', width=None):
     if not content_block:
         return ''
 
+    try:
+        js_object = json.loads(content_block)
+    except (json.JSONDecodeError, TypeError):
+        return
+
     html = '<html><body>'
-    js_object = json.loads(content_block)
     for block in js_object['blocks']:
         was_p = False
         match block['type']:
