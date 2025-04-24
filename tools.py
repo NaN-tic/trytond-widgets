@@ -134,13 +134,12 @@ def js_to_text(js):
         elif type_ == 'quote':
             text += '> %s\\n' % _replace_br(block['data']['text'])
         elif type_ == 'code':
-            text += 'code:\n%s\\n' % block['data']['code']
+            text += '```\n%s\n```\\n' % block['data']['code']
         elif type_ == 'image':
-            image = None
             if block['data'].get('url'):
-                text += '%s\\n' % block['data']['url']
+                text += '![](%s)\\n' % block['data']['url']
             elif block['data'].get('file'):
-                text += 'image: %s\\n' % block['data']['file']['url']
+                text += '![](%s)\\n' % block['data']['file']['url']
         elif type_ == 'checklist':
             for item in  block['data']['items']:
                 text += '[%s] %s\n' % ('X' if item['checked'] else '', _replace_br(item['text']))
