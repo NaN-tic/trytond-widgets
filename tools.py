@@ -1,8 +1,8 @@
 import base64
 import hashlib
 import json
-from html2text import html2text
 import re
+from html2text import html2text
 from trytond.pool import Pool
 from trytond.transaction import Transaction
 from bs4 import BeautifulSoup
@@ -81,7 +81,7 @@ def js_to_html(content_block, url_prefix='', width=None):
             case 'code':
                 html += '<code>'
                 try:
-                    html += re.sub('[^\\]\\n', '<br />',block['data']['code'])
+                    html += re.sub('[^\\]\\n', '<br />', block['data']['code'])
                 except re.error:
                     pass
                 html += '</code>'
@@ -121,14 +121,31 @@ def js_to_text(js):
     except TypeError:
         return text
 
+    def _replace_br(value):
+        return re.sub(r'<br\s*/?>', r'\\n', value, flags=re.IGNORECASE)
+
     for block in js_object['blocks']:
-        if 'text' in block['data']:
-            text += block['data']['text'].replace('<br>' , '\\n')
-        if 'items' in block['data']:
-            for entry in block['data']['items']:
-                text += '>' + str(entry).replace('<br>' , '') + '\\n'
-        text += '\\n'
-    return str(text)
+        type_ = block.get('type', 'paragraph')
+        if type_ == 'header':
+            text += '# %s\\n' % _replace_br(block['data']['text'])
+        elif type_ == 'list':
+            for item in  block['data']['items']:
+                text += '- %s\n' % _replace_br(item)
+        elif type_ == 'quote':
+            text += '> %s\\n' % _replace_br(block['data']['text'])
+        elif type_ == 'code':
+            text += '```\n%s\n```\\n' % block['data']['code']
+        elif type_ == 'image':
+            if block['data'].get('url'):
+                text += '![](%s)\\n' % block['data']['url']
+            elif block['data'].get('file'):
+                text += '![](%s)\\n' % block['data']['file']['url']
+        elif type_ == 'checklist':
+            for item in  block['data']['items']:
+                text += '[%s] %s\n' % ('X' if item['checked'] else '', _replace_br(item['text']))
+        elif block['data'].get('text'):
+            text += '%s\\n' % _replace_br(block['data']['text'])
+    return text
 
 def text_to_js(text):
     '''
