@@ -120,31 +120,35 @@ def js_to_text(js):
         js_object = json.loads(js)
     except TypeError:
         return text
+    except json.decoder.JSONDecodeError:
+        return text
 
     def _replace_br(value):
-        return re.sub(r'<br\s*/?>', r'\\n', value, flags=re.IGNORECASE)
+        return re.sub(r'<br\s*/?>', r'\n\n', value, flags=re.IGNORECASE)
 
     for block in js_object['blocks']:
         type_ = block.get('type', 'paragraph')
         if type_ == 'header':
-            text += '# %s\\n' % _replace_br(block['data']['text'])
+            text += '# %s\n\n' % _replace_br(block['data']['text'])
         elif type_ == 'list':
             for item in  block['data']['items']:
                 text += '- %s\n' % _replace_br(item)
+            text += '\n'
         elif type_ == 'quote':
-            text += '> %s\\n' % _replace_br(block['data']['text'])
+            text += '> %s\n\n' % _replace_br(block['data']['text'])
         elif type_ == 'code':
-            text += '```\n%s\n```\\n' % block['data']['code']
+            text += '```\n%s\n```\n\n' % block['data']['code']
         elif type_ == 'image':
             if block['data'].get('url'):
-                text += '![](%s)\\n' % block['data']['url']
+                text += '![](%s)\n\n' % block['data']['url']
             elif block['data'].get('file'):
-                text += '![](%s)\\n' % block['data']['file']['url']
+                text += '![](%s)\n\n' % block['data']['file']['url']
         elif type_ == 'checklist':
             for item in  block['data']['items']:
                 text += '[%s] %s\n' % ('X' if item['checked'] else '', _replace_br(item['text']))
+            text += '\n'
         elif block['data'].get('text'):
-            text += '%s\\n' % _replace_br(block['data']['text'])
+            text += '%s\n\n' % _replace_br(block['data']['text'])
     return text
 
 def text_to_js(text):
