@@ -25,10 +25,10 @@ class WidgetsTestCase(ModuleTestCase):
             ],"version":"2.31.0-rc.7"}
             """
         markdown_text = tools.js_to_text(value)
-        self.assertIn('# HEADER\\n', markdown_text)
+        self.assertIn('# HEADER\n\n', markdown_text)
         self.assertIn('- list1\n', markdown_text)
-        self.assertIn('> quote\\n', markdown_text)
-        self.assertIn('```\ncode\n```\\n', markdown_text)
-        self.assertIn('![](widgets/attachment/1)\\n', markdown_text)
+        self.assertIn('> quote\n\n', markdown_text)
+        self.assertIn('```\ncode\n```\n\n', markdown_text)
+        self.assertIn('![](widgets/attachment/1)\n\n', markdown_text)
 
 del ModuleTestCase
