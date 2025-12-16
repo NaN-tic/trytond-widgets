@@ -126,7 +126,12 @@ def js_to_text(js):
     def _replace_br(value):
         return re.sub(r'<br\s*/?>', r'\n\n', value, flags=re.IGNORECASE)
 
-    for block in js_object['blocks']:
+    try:
+        blocks = js_object['blocks']
+    except TypeError:
+        return text
+
+    for block in blocks:
         type_ = block.get('type', 'paragraph')
         if type_ == 'header':
             text += '# %s\n\n' % _replace_br(block['data']['text'])
