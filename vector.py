@@ -24,8 +24,31 @@ class Vector(fields.Field):
         else:
             return 'vector'
 
-    def __get__(self, inst, cls):
-        value = super().__get__(inst, cls)
-        if isinstance(value, str) and value.startswith('[') and value.endswith(']'):
-            return json.loads(value) # This way we return a list, not a string
-        return value
+    def get(self, ids, model, name, values=None):
+        vectors = dict((id, None) for id in ids)
+        for value in values or []:
+            data = value.get(name)
+            if data is None:
+                vectors[value['id']] = None
+                continue
+
+            # pgvector + psycopg2 may return numpy arrays; normalize to list.
+            if hasattr(data, 'tolist'):
+                data = data.tolist()
+            elif isinstance(data, str):
+                if data.startswith('[') and data.endswith(']'):
+                    data = json.loads(data)
+            elif isinstance(data, tuple):
+                data = list(data)
+            elif not isinstance(data, list):
+                try:
+                    data = list(data)
+                except TypeError:
+                    pass
+
+            if isinstance(data, list):
+                # Ensure plain Python floats (avoid numpy scalar types).
+                data = [float(x) for x in data]
+
+            vectors[value['id']] = data
+        return vectors
