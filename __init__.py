@@ -4,8 +4,9 @@
 from trytond.pool import Pool
 from . import ir
 from . import routes
+from .encryption import FernetEncryptionMixin
 
-__all__ = ['register', 'routes']
+__all__ = ['register', 'routes', 'FernetEncryptionMixin']
 
 def register():
     Pool.register(
