@@ -34,9 +34,7 @@ class FernetEncryptionMixin:
             raise UserError(gettext(
                     'widgets.msg_invalid_fernet_token',
                     field=clear_name)) from exc
-        clear_field = self._fields[clear_name]
-        clear_field = getattr(clear_field, '_field', clear_field)
-        if clear_field._type == 'binary':
+        if isinstance(self._fields[clear_name], fields.Binary):
             return decrypted
         return decrypted.decode('utf-8')
 
@@ -44,14 +42,11 @@ class FernetEncryptionMixin:
     def set_fernet_value(cls, records, name, value):
         if value == 'x' * 10:
             return
-        encrypted_name = '%s_encrypted' % name
-        clear_field = cls._fields[name]
-        clear_field = getattr(clear_field, '_field', clear_field)
-        encrypted_value = None
-        if value not in (None, ''):
-            if clear_field._type == 'binary':
-                value = bytes(value)
-            else:
+        if value:
+            if not isinstance(value, bytes):
                 value = value.encode('utf-8')
             encrypted_value = cls.get_fernet().encrypt(value)
+        else:
+            encrypted_value = None
+        encrypted_name = '%s_encrypted' % name
         cls.write(records, {encrypted_name: encrypted_value})
