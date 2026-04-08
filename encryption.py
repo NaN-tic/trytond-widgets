@@ -16,9 +16,7 @@ class FernetEncryptionMixin:
 
     def get_fernet_value(self, name):
         if not name.endswith('_decrypted'):
-            if getattr(self, '%s_encrypted' % name, None):
-                return 'x' * 10
-            return None
+            return 'x' * 10
 
         clear_name = name[:-10]
         if clear_name not in self._fields:
