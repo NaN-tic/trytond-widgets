@@ -32,7 +32,7 @@ class Vector(fields.Field):
                 vectors[value['id']] = None
                 continue
 
-            # pgvector + psycopg2 may return numpy arrays; normalize to list.
+            # pgvector + psycopg may return numpy arrays; normalize to list.
             if hasattr(data, 'tolist'):
                 data = data.tolist()
             elif isinstance(data, str):

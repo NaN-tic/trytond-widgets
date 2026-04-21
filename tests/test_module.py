@@ -1,7 +1,11 @@
 # This file is part widgets module for Tryton.
 # The COPYRIGHT file at the top level of this repository contains
 # the full copyright notices and license terms.
+from lxml import etree
+
+from trytond.pool import Pool
 from trytond.tests.test_tryton import ModuleTestCase
+from trytond.tests.test_tryton import with_transaction
 from trytond.modules.widgets import tools
 
 
@@ -30,5 +34,18 @@ class WidgetsTestCase(ModuleTestCase):
         self.assertIn('> quote\n\n', markdown_text)
         self.assertIn('```\ncode\n```\n\n', markdown_text)
         self.assertIn('![](widgets/attachment/1)\n\n', markdown_text)
+
+    @with_transaction()
+    def test_validator_supports_custom_widgets(self):
+        "Test validator supports custom widgets"
+        View = Pool().get('ir.ui.view')
+        validator = View._validator('form')
+
+        for xml in [
+                '<form><field name="body" widget="code" language="json"/></form>',
+                '<form><field name="body" widget="block" language="json"/></form>',
+                ]:
+            with self.subTest(xml=xml):
+                validator.assertValid(etree.fromstring(xml))
 
 del ModuleTestCase
