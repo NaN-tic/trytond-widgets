@@ -3,6 +3,7 @@
 # the full copyright notices and license terms.
 from lxml import etree
 
+from trytond.modules.widgets.ir import _WidgetValidator
 from trytond.pool import Pool
 from trytond.tests.test_tryton import ModuleTestCase
 from trytond.tests.test_tryton import with_transaction
@@ -47,5 +48,17 @@ class WidgetsTestCase(ModuleTestCase):
                 ]:
             with self.subTest(xml=xml):
                 validator.assertValid(etree.fromstring(xml))
+
+    @with_transaction()
+    def test_validator_is_not_rewrapped(self):
+        "Test validator wrapper is cached once"
+        View = Pool().get('ir.ui.view')
+
+        validator = View._validator('form')
+        for _ in range(5):
+            validator = View._validator('form')
+
+        self.assertIsInstance(validator, _WidgetValidator)
+        self.assertNotIsInstance(validator._validator, type(validator))
 
 del ModuleTestCase
