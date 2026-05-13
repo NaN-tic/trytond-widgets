@@ -38,7 +38,7 @@ class View(metaclass=PoolMeta):
         widgets = set()
         if type_ in {'form', 'list-form'}:
             widgets.update({'block', 'code'})
-        if widgets:
+        if widgets and not isinstance(validator, _WidgetValidator):
             validator = _WidgetValidator(validator, widgets)
             key = (cls.__name__, type_)
             validator = cls._get_validator_cache.set(key, validator)
