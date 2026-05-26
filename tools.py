@@ -3,9 +3,39 @@ import hashlib
 import json
 import re
 from html2text import html2text
+from sql.functions import Function
+from trytond import backend
 from trytond.pool import Pool
 from trytond.transaction import Transaction
 from bs4 import BeautifulSoup
+
+
+class Similarity(Function):
+    __slots__ = ()
+    _function = 'SIMILARITY'
+
+
+def create_similarity():
+    conn = Transaction().connection
+    if backend.name == 'sqlite':
+        def trigram_similarity(a, b):
+            if a is None or b is None:
+                return None
+            a = str(a).lower()
+            b = str(b).lower()
+            if len(a) < 3 or len(b) < 3:
+                return 1.0 if a == b else 0.0
+
+            def trigrams(s):
+                return {s[i:i + 3] for i in range(len(s) - 2)}
+
+            ta = trigrams(a)
+            tb = trigrams(b)
+            union = ta | tb
+            if not union:
+                return 0.0
+            return len(ta & tb) / len(union)
+        conn.create_function('similarity', 2, trigram_similarity)
 
 
 def js_plus_js(js1, js2):
