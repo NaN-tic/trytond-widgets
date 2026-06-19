@@ -8,6 +8,7 @@ FERNET_KEY = config.get('cryptography', 'fernet_key')
 
 
 class FernetEncryptionMixin:
+    __slots__ = ()
 
     @classmethod
     def get_fernet(cls):
