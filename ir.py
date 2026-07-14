@@ -37,7 +37,7 @@ class View(metaclass=PoolMeta):
         validator = super()._validator(type_)
         widgets = set()
         if type_ in {'form', 'list-form'}:
-            widgets.update({'block', 'code'})
+            widgets.update({'block', 'code', 'markdown'})
         if widgets and not isinstance(validator, _WidgetValidator):
             validator = _WidgetValidator(validator, widgets)
             key = (cls.__name__, type_)
