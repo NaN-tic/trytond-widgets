@@ -8,25 +8,31 @@ class _WidgetValidator:
         self._validator = validator
         self._widgets = widgets
 
+    def _base_validator(self):
+        validator = self._validator
+        while hasattr(validator, '_validator'):
+            validator = validator._validator
+        return validator
+
     def _prepare_tree(self, tree):
-        if not self._widgets:
-            return tree
         tree = etree.fromstring(etree.tostring(tree))
         widgets = ' or '.join(f'@widget="{widget}"' for widget in self._widgets)
         for field in tree.xpath(f'.//field[{widgets}]'):
             field.set('widget', 'text')
             field.attrib.pop('language', None)
+        if hasattr(self._validator, '_prepare_tree'):
+            tree = self._validator._prepare_tree(tree)
         return tree
 
     def validate(self, tree):
-        return self._validator.validate(self._prepare_tree(tree))
+        return self._base_validator().validate(self._prepare_tree(tree))
 
     def assertValid(self, tree):
-        return self._validator.assertValid(self._prepare_tree(tree))
+        return self._base_validator().assertValid(self._prepare_tree(tree))
 
     @property
     def error_log(self):
-        return self._validator.error_log
+        return self._base_validator().error_log
 
 
 class View(metaclass=PoolMeta):
