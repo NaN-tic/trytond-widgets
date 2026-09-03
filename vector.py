@@ -33,7 +33,9 @@ class Vector(fields.Field):
                 continue
 
             # pgvector + psycopg2 may return numpy arrays; normalize to list.
-            if hasattr(data, 'tolist'):
+            if hasattr(data, 'to_list'):
+                data = data.to_list()
+            elif hasattr(data, 'tolist'):
                 data = data.tolist()
             elif isinstance(data, str):
                 if data.startswith('[') and data.endswith(']'):
