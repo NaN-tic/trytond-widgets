@@ -27,3 +27,24 @@ documentation:
 
 To use without installation, extract the archive into ``trytond/modules`` with
 the directory name widgets.
+
+Vector fields (PostgreSQL)
+-------------------------
+
+Install the Python adapter with ``pip install 'nantic_widgets[vector]'``
+and enable the pgvector extension in each database that uses Vector fields::
+
+    CREATE EXTENSION IF NOT EXISTS vector;
+
+Configure Tryton to load the database mixin at server startup::
+
+    [database]
+    database_mixins:
+        trytond.modules.widgets.database.DatabaseMixin
+
+If other database mixins are configured, keep them in the same list,
+one per line. Restart the server after changing the configuration.
+
+The mixin registers the pgvector adapters on each connection, independently
+of statement_timeout. It logs a warning when the vector type is unavailable.
+The register_vector patch to Tryton's PostgreSQL backend is no longer needed.
