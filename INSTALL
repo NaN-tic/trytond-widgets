@@ -29,7 +29,7 @@ To use without installation, extract the archive into ``trytond/modules`` with
 the directory name widgets.
 
 Vector fields (PostgreSQL)
--------------------------
+--------------------------
 
 Install the Python adapter with ``pip install 'nantic_widgets[vector]'``
 and enable the pgvector extension in each database that uses Vector fields::
