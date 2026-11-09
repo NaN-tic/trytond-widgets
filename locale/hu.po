@@ -1,0 +1,31 @@
+#
+msgid ""
+msgstr ""
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "model:ir.message,text:msg_missing_fernet_key"
+msgid "Missing Fernet key."
+msgstr "Hiányzó Fernet-kulcs."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_invalid_fernet_token"
+msgid ""
+"The encrypted value for \"%(field)s\" can not be decrypted with the current "
+"Fernet key."
+msgstr ""
+"A(z) „%(field)s” mező titkosított értéke nem fejthető vissza az aktuális "
+"Fernet-kulccsal."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_invalid_decrypted_field_name"
+msgid "The field \"%(field)s\" must end with \"_decrypted\"."
+msgstr "A(z) „%(field)s” mező nevének „_decrypted” végződésűnek kell lennie."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_unknown_decrypted_field"
+msgid "The field \"%(field)s\" is not defined on the model."
+msgstr "A(z) „%(field)s” mező nincs definiálva a modellen."
