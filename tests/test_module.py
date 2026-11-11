@@ -45,6 +45,7 @@ class WidgetsTestCase(ModuleTestCase):
         for xml in [
                 '<form><field name="body" widget="code" language="json"/></form>',
                 '<form><field name="body" widget="block" language="json"/></form>',
+                '<form><field name="body" widget="markdown"/></form>',
                 ]:
             with self.subTest(xml=xml):
                 validator.assertValid(etree.fromstring(xml))
