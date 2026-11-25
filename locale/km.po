@@ -1,0 +1,31 @@
+#
+msgid ""
+msgstr ""
+"Language: km\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "model:ir.message,text:msg_missing_fernet_key"
+msgid "Missing Fernet key."
+msgstr "ខ្វះកូនសោ Fernet។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_invalid_fernet_token"
+msgid ""
+"The encrypted value for \"%(field)s\" can not be decrypted with the current "
+"Fernet key."
+msgstr ""
+"មិនអាចឌីគ្រីបតម្លៃដែលបានអ៊ិនគ្រីបសម្រាប់ «%(field)s» ដោយប្រើកូនសោ Fernet "
+"បច្ចុប្បន្នបានទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_invalid_decrypted_field_name"
+msgid "The field \"%(field)s\" must end with \"_decrypted\"."
+msgstr "ឈ្មោះវាល «%(field)s» ត្រូវបញ្ចប់ដោយ «_decrypted»។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_unknown_decrypted_field"
+msgid "The field \"%(field)s\" is not defined on the model."
+msgstr "វាល «%(field)s» មិនត្រូវបានកំណត់ក្នុងម៉ូដែលទេ។"
